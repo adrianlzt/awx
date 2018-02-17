@@ -35,8 +35,17 @@ export default ['$state', '$stateParams', '$scope', 'RelatedHostsFormDefinition'
             $scope.host.enabled = !$scope.host.enabled;
         };
         $scope.formSave = function(){
-            var json_data = ToJSON($scope.parseType, $scope.host_variables, true),
-            params = {
+            var json_data = ToJSON($scope.parseType, $scope.host_variables, true);
+
+            // If data is in YAML format, convert to JSON to store in the JSONB field of the database
+            if ($scope.parseType === "yaml") {
+              json_data = JSON.stringify(jsyaml.load(json_data));
+            }
+
+            // If yaml is empty, JSON.stringify will return undefined
+            json_data = json_data ? json_data : "{}"
+
+            var params = {
                 variables: json_data,// $scope.variables === '---' || $scope.variables === '{}' ? null : $scope.variables,
                 name: $scope.name,
                 description: $scope.description,

@@ -22,9 +22,17 @@
  			$scope.host.enabled = !$scope.host.enabled;
  		};
  		$scope.formSave = function(){
+			// If data is in YAML format, convert to JSON to store in the JSONB field of the database
+			if ($scope.parseType === "yaml") {
+				$scope.host_variables = JSON.stringify(jsyaml.load($scope.host_variables));
+			}
+
+			// If yaml is empty, JSON.stringify will return the string "null". We set in the database an empty json
+			$scope.host_variables = $scope.host_variables === "null" ? "{}" : $scope.host_variables
+
  			var host = {
  				id: $scope.host.id,
- 				variables: $scope.host_variables === '---' || $scope.host_variables === '{}' ? null : $scope.host_variables,
+				variables: $scope.host_variables,
  				name: $scope.name,
  				description: $scope.description,
  				enabled: $scope.host.enabled
@@ -39,7 +47,7 @@
  			$scope.name = host.name;
             $rootScope.breadcrumb.host_name = host.name;
  			$scope.description = host.description;
-			$scope.host_variables = getVars(host.variables);
+			$scope.host_variables = getVars(JSON.stringify(host.variables));
         	ParseTypeChange({
         		scope: $scope,
         		field_id: 'host_host_variables',
@@ -65,7 +73,8 @@
 				return true;
 			}
 
-			if(str === ''){
+			// If stored value in the database is empty ('{}'), return an empty yaml
+			if(str === "{}"){
 				return '---';
 			}
 			else if(IsJsonString(str)){

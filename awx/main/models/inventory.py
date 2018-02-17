@@ -75,10 +75,10 @@ class Inventory(CommonModelNameNotUnique, ResourceMixin, RelatedJobsMixin):
         on_delete=models.SET_NULL,
         null=True,
     )
-    variables = models.TextField(
+    variables = JSONBField(
         blank=True,
-        default='',
-        help_text=_('Inventory variables in JSON or YAML format.'),
+        default={},
+        help_text=_('Host variables in JSON format.'),
     )
     has_active_failures = models.BooleanField(
         default=False,
@@ -551,10 +551,10 @@ class Host(CommonModelNameNotUnique):
         default='',
         help_text=_('The value used by the remote inventory source to uniquely identify the host'),
     )
-    variables = models.TextField(
+    variables = JSONBField(
         blank=True,
-        default='',
-        help_text=_('Host variables in JSON or YAML format.'),
+        default={},
+        help_text=_('Inventory variables in JSON format.'),
     )
     last_job = models.ForeignKey(
         'Job',
@@ -731,10 +731,10 @@ class Group(CommonModelNameNotUnique, RelatedJobsMixin):
         related_name='children',
         blank=True,
     )
-    variables = models.TextField(
+    variables = JSONBField(
         blank=True,
-        default='',
-        help_text=_('Group variables in JSON or YAML format.'),
+        default={},
+        help_text=_('Group variables in JSON format.'),
     )
     hosts = models.ManyToManyField(
         'Host',
