@@ -25,9 +25,17 @@
             $state.go('hosts.edit.nested_groups', {inventory_id: id});
         };
  		$scope.formSave = function(){
+			// If data is in YAML format, convert to JSON to store in the JSONB field of the database
+			if ($scope.parseType === "yaml") {
+			  $scope.variables = JSON.stringify(jsyaml.load($scope.variables));
+			}
+
+			// If yaml is empty, JSON.stringify will return the string "null". We set in the database an empty json
+			$scope.variables = $scope.variables === "null" ? "{}" : $scope.variables
+
  			var host = {
  				id: $scope.host.id,
- 				variables: $scope.variables === '---' || $scope.variables === '{}' ? null : $scope.variables,
+				variables: $scope.variables,
  				name: $scope.name,
  				description: $scope.description,
  				enabled: $scope.host.enabled
@@ -40,14 +48,14 @@
  		var init = function(){
  			$scope.host = host.data;
  			$rootScope.breadcrumb.host_name = host.data.name;
-            $scope.name = host.data.name;
+			$scope.name = host.data.name;
  			$scope.description = host.data.description;
-			$scope.variables = getVars(host.data.variables);
-        	ParseTypeChange({
-        		scope: $scope,
-        		field_id: 'host_variables',
-        		variable: 'variables',
-        	});
+			$scope.variables = getVars(JSON.stringify(host.data.variables));
+			ParseTypeChange({
+				scope: $scope,
+				field_id: 'host_variables',
+				variable: 'variables',
+			});
  		};
 
 		// Adding this function b/c sometimes extra vars are returned to the
@@ -68,7 +76,8 @@
 				return true;
 			}
 
-			if(str === ''){
+			// If stored value in the database is empty ('{}'), return an empty yaml
+			if(str === '{}'){
 				return '---';
 			}
 			else if(IsJsonString(str)){

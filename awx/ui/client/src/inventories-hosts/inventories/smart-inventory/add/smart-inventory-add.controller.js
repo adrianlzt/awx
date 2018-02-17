@@ -54,6 +54,14 @@ function SmartInventoryAdd($scope, $location,
 
             data.variables = ToJSON($scope.parseType, $scope.smartinventory_variables, true);
 
+            // If data is in YAML format, convert to JSON to store in the JSONB field of the database
+            if (data.variables !== "" && $scope.parseType === "yaml") {
+              data.variables = JSON.stringify(jsyaml.load(data.variables));
+            }
+
+            // If yaml is empty, JSON.stringify will return an empty string
+            data.variables = data.variables == "" ? "{}" : data.variables
+
             data.host_filter = decodeURIComponent($scope.smart_hosts.host_filter);
 
             data.kind = "smart";

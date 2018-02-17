@@ -76,6 +76,14 @@ function InventoriesEdit($scope, $location,
             }
         }
 
+        // Convertir variables a json
+        if ($scope.parseType === "yaml") {
+            data["variables"] = JSON.stringify(jsyaml.load(data["variables"]));
+        }
+
+        // Si el yaml estaba vacio, el stringify devolvera null, ponemos un json vacio en su lugar
+        data["variables"] = data["variables"] == "null" ? "{}" : data["variables"]
+
         Rest.setUrl(defaultUrl + $stateParams.inventory_id + '/');
         Rest.put(data)
             .then(() => {
