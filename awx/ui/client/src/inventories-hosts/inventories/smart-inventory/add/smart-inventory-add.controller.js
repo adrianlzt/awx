@@ -60,7 +60,7 @@ function SmartInventoryAdd($scope, $location,
             }
 
             // If yaml is empty, JSON.stringify will return an empty string
-            data.variables = data.variables == "" ? "{}" : data.variables
+            data.variables = data.variables === "" ? "{}" : data.variables;
 
             data.host_filter = decodeURIComponent($scope.smart_hosts.host_filter);
 

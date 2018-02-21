@@ -31,7 +31,7 @@
 			}
 
 			// If yaml is empty, JSON.stringify will return the string "null". We set in the database an empty json
-			$scope.variables = $scope.variables === "null" ? "{}" : $scope.variables
+			$scope.variables = $scope.variables === "null" ? "{}" : $scope.variables;
 
  			var host = {
  				id: $scope.host.id,

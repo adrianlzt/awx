@@ -43,7 +43,7 @@ export default ['$state', '$stateParams', '$scope', 'RelatedHostsFormDefinition'
             }
 
             // If yaml is empty, JSON.stringify will return undefined
-            json_data = json_data ? json_data : "{}"
+            json_data = json_data ? json_data : "{}";
 
             var params = {
                 variables: json_data,// $scope.variables === '---' || $scope.variables === '{}' ? null : $scope.variables,
