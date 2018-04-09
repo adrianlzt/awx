@@ -24,7 +24,7 @@ from awx.main.models import Host
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0025_v330_delete_authtoken'),
+        ('main', '0026_v330_emitted_events'),
     ]
 
     operations = [
